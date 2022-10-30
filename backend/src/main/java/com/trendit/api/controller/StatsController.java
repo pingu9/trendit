@@ -5,7 +5,6 @@ import com.trendit.api.response.LineChartGetRes;
 import com.trendit.api.response.NewsCountGetRes;
 import com.trendit.api.response.data.BarChartData;
 import com.trendit.api.service.StatsService;
-import com.trendit.common.model.response.BaseRes;
 import com.trendit.common.type.PeriodEnum;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

@@ -1,6 +1,5 @@
 package com.trendit.api.controller;
 
-import com.trendit.api.exception.PasswordMisMatchException;
 import com.trendit.api.request.BoardPostReq;
 import com.trendit.api.request.BoardUpdateReq;
 import com.trendit.api.response.BoardGetRes;
@@ -13,15 +12,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/board")
@@ -39,10 +34,6 @@ public class BoardController {
     })
     public ResponseEntity<? extends BaseRes> postBoard(@Validated @RequestBody BoardPostReq boardPostReq,
                                                        BindingResult bindingResult) throws Exception{
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "입력 내용을 다시 확인해주세요"));
-        }
-
         Board saveBoard = boardService.postBoard(boardPostReq);
 
         return ResponseEntity.status(200).body(BoardPostRes.of(200, "글이 등록되었습니다", saveBoard));

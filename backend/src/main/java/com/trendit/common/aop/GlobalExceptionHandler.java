@@ -3,6 +3,7 @@ package com.trendit.common.aop;
 import com.trendit.api.exception.DuplicatedKeywordException;
 import com.trendit.api.exception.KeywordHasSpaceException;
 import com.trendit.api.exception.PasswordMisMatchException;
+import com.trendit.common.exception.BindingException;
 import com.trendit.common.exception.IllegalChartDataException;
 import com.trendit.common.model.response.BaseRes;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class GlobalExceptionHandler {
     private final String DUPLICATED_KEYWORD_MESSAGE = "중복된 키워드입니다.";
 
     @ExceptionHandler({NoSuchElementException.class, PasswordMisMatchException.class,
-            KeywordHasSpaceException.class, IllegalChartDataException.class})
+            KeywordHasSpaceException.class, IllegalChartDataException.class, BindingException.class})
     protected ResponseEntity<BaseRes> handleBadRequestExceptions(Exception e) {
         e.printStackTrace();
         return ResponseEntity.status(400).body(BaseRes.of(400, BAD_REQUEST_MESSAGE));
