@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -37,21 +38,15 @@ public class BoardController {
             @ApiResponse(code = 500, message = "오류가 발생했습니다")
     })
     public ResponseEntity<? extends BaseRes> postBoard(@Validated @RequestBody BoardPostReq boardPostReq,
-                                                       BindingResult bindingResult) {
+                                                       BindingResult bindingResult) throws Exception{
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(400).body(BaseRes.of(400, "입력 내용을 다시 확인해주세요"));
         }
 
-        try {
-            Board saveBoard = boardService.postBoard(boardPostReq);
-            return ResponseEntity.status(200).body(BoardPostRes.of(200, "글이 등록되었습니다", saveBoard));
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(400).body(BaseRes.of(400, "입력 내용을 다시 확인해주세요"));
-        } catch (Exception e2) {
-            e2.printStackTrace();
-            return ResponseEntity.status(500).body(BaseRes.of(500, "오류가 발생했습니다"));
-        }
+        Board saveBoard = boardService.postBoard(boardPostReq);
+
+        return ResponseEntity.status(200).body(BoardPostRes.of(200, "글이 등록되었습니다", saveBoard));
+
     }
 
     @PutMapping
@@ -63,15 +58,8 @@ public class BoardController {
     })
 
     public ResponseEntity updateBoard(@Validated @RequestBody BoardUpdateReq boardUpdateReq) throws Exception {
-        try {
-            boardService.updateBoard(boardUpdateReq);
-        } catch (PasswordMisMatchException e1) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, e1.getMessage()));
-        } catch (NoSuchElementException e2) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "입력 내용을 다시 확인해주세요"));
-        } catch (Exception e3) {
-            return ResponseEntity.status(500).body(BaseRes.of(500, "오류가 발생했습니다"));
-        }
+        boardService.updateBoard(boardUpdateReq);
+
         return ResponseEntity.status(200).body(BaseRes.of(200, "글이 수정되었습니다"));
     }
 
@@ -82,18 +70,10 @@ public class BoardController {
             @ApiResponse(code = 400, message = "입력 내용을 다시 확인해주세요"),
             @ApiResponse(code = 500, message = "오류가 발생했습니다")
     })
-    public ResponseEntity deleteBoard(@PathVariable long boardId, @RequestHeader(value = "Authorization") String password) {
-        try {
-            boardService.deleteBoard(boardId, password);
-        } catch (PasswordMisMatchException e1) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, e1.getMessage()));
-        } catch (NoSuchElementException e2) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "입력 내용을 다시 확인해주세요"));
-        } catch (NoSuchAlgorithmException e3) {
-            return ResponseEntity.status(500).body(BaseRes.of(500, "오류가 발생했습니다"));
-        } catch (Exception e4) {
-            return ResponseEntity.status(500).body(BaseRes.of(500, "오류가 발생했습니다"));
-        }
+    public ResponseEntity deleteBoard(@PathVariable long boardId, @RequestHeader(value = "Authorization") String password)
+            throws Exception {
+        boardService.deleteBoard(boardId, password);
+
         return ResponseEntity.status(200).body(BaseRes.of(200, "글이 삭제되었습니다"));
     }
 
@@ -107,14 +87,7 @@ public class BoardController {
     })
 
     public ResponseEntity<? extends BaseRes> getBoards(@PathVariable long keywordId) {
-        List<BoardData> boardDataList;
-        try {
-            boardDataList = boardService.getBoards(keywordId);
-        } catch (NoSuchElementException e1) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "NoSuchElementException 에러"));
-        } catch (Exception e4) {
-            return ResponseEntity.status(500).body(BaseRes.of(500, "오류가 발생했습니다"));
-        }
+        List<BoardData> boardDataList = boardService.getBoards(keywordId);
 
         return ResponseEntity.status(200).body(BoardGetRes.of(200, "댓글 초기 100개 조회", boardDataList));
     }
@@ -128,14 +101,8 @@ public class BoardController {
             @ApiResponse(code = 500, message = "오류가 발생했습니다")
     })
     public ResponseEntity<? extends BaseRes> getBoards(@PathVariable long keywordId, @PathVariable long boardId) {
-        List<BoardData> boardDataList;
-        try {
-            boardDataList = boardService.getBoards(keywordId, boardId);
-        } catch (NoSuchElementException e1) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "NoSuchElementException 에러"));
-        } catch (Exception e4) {
-            return ResponseEntity.status(500).body(BaseRes.of(500, "오류가 발생했습니다"));
-        }
+        List<BoardData> boardDataList = boardService.getBoards(keywordId, boardId);
+
         return ResponseEntity.status(200).body(BoardGetRes.of(200, "댓글 추가 100개 조회", boardDataList));
     }
 

@@ -44,12 +44,7 @@ public class StatsController {
     })
 
     public ResponseEntity getNewsCount() {
-        NewsCountData data;
-        try {
-            data = newsService.getNewsCountData();
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(BaseRes.of(500, "서버 에러 발생."));
-        }
+        NewsCountData data = newsService.getNewsCountData();
 
         return ResponseEntity.status(200).body(NewsCountGetRes.of(200, "Success", data));
     }
@@ -63,6 +58,7 @@ public class StatsController {
     })
     public ResponseEntity getKeywordNews(@PathVariable PeriodEnum type) {
         List<KeywordNewsData> data = keywordService.getKeywordNews(type);
+
         return ResponseEntity.status(200).body(KeywordNewsGetRes.of(200, "Success", data));
     }
 
@@ -79,13 +75,7 @@ public class StatsController {
             @ApiParam(value = "val: 그래프의 슬라이더의 값을 그대로 입력," +
                     "type = day이고 val = 1이면 6일 전, 7이면 오늘", required = true)
             @PathVariable int val) {
-        List<BarChartData> barChartDataList;
-        try {
-            barChartDataList = statsService.getBarChartData(type, val);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(BaseRes.of(500, "서버 에러 발생."));
-        }
+        List<BarChartData> barChartDataList = statsService.getBarChartData(type, val);
 
         return ResponseEntity.status(200).body(BarChartGetRes.of(200, "Success", barChartDataList));
     }
@@ -101,14 +91,7 @@ public class StatsController {
     public ResponseEntity getCompanyBarChartData(
             @ApiParam(value = "type: day/week/month/year", required = true)
             @PathVariable PeriodEnum type) {
-        List<BarChartData> barChartDataList;
-
-        try {
-            barChartDataList = statsService.getCompanyBarChartData(type);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(BaseRes.of(500, "서버 에러 발생."));
-        }
+        List<BarChartData> barChartDataList = statsService.getCompanyBarChartData(type);
 
         return ResponseEntity.status(200).body(BarChartGetRes.of(200, "Success", barChartDataList));
     }
@@ -125,15 +108,9 @@ public class StatsController {
             @ApiParam(value = "type: day/week/month/year", required = true)
             @PathVariable PeriodEnum type,
             @ApiParam(value = "keywordId : 키워드 입력", required = true)
-            @PathVariable long keywordId) {
+            @PathVariable long keywordId) throws Exception {
 
-        List<Integer> lineChartDataList;
-        try {
-            lineChartDataList = statsService.getLineChartData(type, keywordId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(BaseRes.of(500, "서버 에러 발생."));
-        }
+        List<Integer> lineChartDataList = statsService.getLineChartData(type, keywordId);
 
         return ResponseEntity.status(200).body(LineChartGetRes.of(200, "Success", lineChartDataList));
     }

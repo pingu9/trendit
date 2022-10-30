@@ -27,21 +27,27 @@ public class Keyword {
     @JoinColumn(name = "company_id")
     Company company;
 
+    @Builder.Default
     @OneToMany(mappedBy = "keyword")
     List<KeywordHasNews> keywordHasNews = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "keyword")
     List<StatisticsYear> statisticsYears = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "keyword")
     List<StatisticsMonth> statisticsMonths = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "keyword")
     List<StatisticsWeek> statisticsWeeks = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "keyword")
     List<StatisticsDate> statisticsDates = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "keyword")
     List<Board> boards = new ArrayList<>();
 
