@@ -1,18 +1,13 @@
 package com.trendit.api.controller;
 
-import com.trendit.api.exception.DuplicatedKeywordException;
-import com.trendit.api.exception.KeywordHasSpaceException;
-import com.trendit.api.request.BoardPostReq;
 import com.trendit.api.request.KeywordCompanyPostReq;
 import com.trendit.api.request.KeywordPostReq;
 import com.trendit.api.response.KeywordGetRes;
-import com.trendit.api.service.BoardService;
 import com.trendit.api.service.KeywordService;
 import com.trendit.api.service.WebClientService;
 import com.trendit.common.model.response.BaseRes;
 import com.trendit.api.response.KeywordListGetRes;
 import com.trendit.api.response.data.KeywordData;
-import com.trendit.api.service.KeywordService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -21,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.NoSuchElementException;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,6 +38,7 @@ public class KeywordController {
     })
     public ResponseEntity getKeywordList(@RequestParam("keyword")String keyword){
         List<KeywordData> data = keywordService.getKeywordList(keyword);
+
         return ResponseEntity.status(200).body(KeywordListGetRes.of(200,"Success",data));
     }
 
@@ -56,22 +50,11 @@ public class KeywordController {
             @ApiResponse(code = 400, message = "요청 값이 잘못되었습니다."),
             @ApiResponse(code = 500, message = "서버 에러 발생.")
     })
-    public ResponseEntity addKeyword(@Validated @RequestBody KeywordPostReq keywordPostReq, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "요청 값이 잘못되었습니다."));
-        }
+    public ResponseEntity addKeyword(@Validated @RequestBody KeywordPostReq keywordPostReq,
+                                     BindingResult bindingResult) throws Exception {
+        keywordService.addKeyword(keywordPostReq);
+        webClientService.addUserDictionary(keywordPostReq.getKeyword());
 
-        try {
-            keywordService.addKeyword(keywordPostReq);
-            webClientService.addUserDictionary(keywordPostReq.getKeyword());
-        } catch (KeywordHasSpaceException keywordHasSpaceException) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "요청 값이 잘못되었습니다."));
-        } catch (DuplicatedKeywordException duplicatedKeywordException) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "중복된 키워드입니다."));
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseEntity.status(500).body(BaseRes.of(500, "서버 에러 발생."));
-        }
         return ResponseEntity.status(200).body(BaseRes.of(200, "키워드가 추가되었습니다."));
     }
 
@@ -84,22 +67,11 @@ public class KeywordController {
             @ApiResponse(code = 400, message = "요청 값이 잘못되었습니다."),
             @ApiResponse(code = 500, message = "서버 에러 발생.")
     })
-    public ResponseEntity addKeywordCompany(@Validated @RequestBody KeywordCompanyPostReq keywordCompanyPostReq, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "요청 값이 잘못되었습니다."));
-        }
+    public ResponseEntity addKeywordCompany(@Validated @RequestBody KeywordCompanyPostReq keywordCompanyPostReq,
+                                            BindingResult bindingResult) throws Exception {
+        keywordService.addKeywordCompany(keywordCompanyPostReq);
+        webClientService.addUserDictionary(keywordCompanyPostReq.getCompanyName());
 
-        try {
-            keywordService.addKeywordCompany(keywordCompanyPostReq);
-            webClientService.addUserDictionary(keywordCompanyPostReq.getCompanyName());
-        } catch (KeywordHasSpaceException keywordHasSpaceException) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "요청 값이 잘못되었습니다."));
-        } catch (DuplicatedKeywordException duplicatedKeywordException) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "중복된 키워드입니다."));
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseEntity.status(500).body(BaseRes.of(500, "서버 에러 발생."));
-        }
         return ResponseEntity.status(200).body(BaseRes.of(200, "키워드가 추가되었습니다."));
     }
 
@@ -112,6 +84,7 @@ public class KeywordController {
     })
     public ResponseEntity getKeyword(@PathVariable long keyword_id) {
         KeywordData data = keywordService.getKeyword(keyword_id);
+
         return ResponseEntity.status(200).body(KeywordGetRes.of(200,"Success",data));
     }
 }

@@ -15,7 +15,6 @@ import com.trendit.api.service.NewsService;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/news")
@@ -27,6 +26,7 @@ public class NewsController {
     @GetMapping("/latest")
     public ResponseEntity getLatestNews(String newsDate, @RequestParam(value = "newsAgencies", required = false)List<String> newsAgencies, Pageable pageable) {
         Page<News> data = newsService.getLatestNews(newsDate, newsAgencies, pageable);
+
         return ResponseEntity.status(200).body(LatestNewsGetRes.of(200, "Success", data));
     }
 
@@ -41,16 +41,8 @@ public class NewsController {
                                                      @RequestParam(value = "newsDate", required = false) String newsDate,
                                                      @RequestParam(value = "newsAgencies", required = false) List<String> newsAgencies,
                                                      Pageable pageable) {
-        Page<News> news;
-        try {
-            news = newsService.getNews(keywordId, newsDate, newsAgencies, pageable);
-        } catch (NoSuchElementException e1) {
-            e1.printStackTrace();
-            return ResponseEntity.status(400).body(BaseRes.of(400, "입력 내용을 다시 확인해주세요"));
-        } catch (Exception e4) {
-            e4.printStackTrace();
-            return ResponseEntity.status(500).body(BaseRes.of(500, "오류가 발생했습니다"));
-        }
+        Page<News> news = newsService.getNews(keywordId, newsDate, newsAgencies, pageable);
+
         return ResponseEntity.status(200).body(NewsGetRes.of(200, "기사가 조회되었습니다", news));
 
     }

@@ -3,7 +3,6 @@ package com.trendit.api.controller;
 import com.trendit.api.response.CompanyListGetRes;
 import com.trendit.api.response.SearchCompanyGetRes;
 import com.trendit.api.service.CompanyService;
-import com.trendit.common.model.response.BaseRes;
 import com.trendit.db.entity.Company;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -30,13 +29,7 @@ public class CompanyController {
             @ApiResponse(code=500, message = "서버 에러 발생.")
     })
     public ResponseEntity getCompanyList() {
-        List<Company> data;
-        try {
-            data = companyService.getCompanyList();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(BaseRes.of(500, "서버 에러 발생."));
-        }
+        List<Company> data = companyService.getCompanyList();
 
         return ResponseEntity.status(200).body(CompanyListGetRes.of(200, "Success", data));
     }
@@ -49,6 +42,7 @@ public class CompanyController {
     })
     public ResponseEntity<SearchCompanyGetRes> searchCompany(@RequestParam(required = false) String companyName, Pageable pageable) {
         Page<Company> companyPage = companyService.searchCompanyWithPageable(companyName, pageable);
+
         return ResponseEntity.status(200).body(SearchCompanyGetRes.of(200, "Success", companyPage));
     }
 }
