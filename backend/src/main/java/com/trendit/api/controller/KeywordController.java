@@ -1,18 +1,13 @@
 package com.trendit.api.controller;
 
-import com.trendit.api.exception.DuplicatedKeywordException;
-import com.trendit.api.exception.KeywordHasSpaceException;
-import com.trendit.api.request.BoardPostReq;
 import com.trendit.api.request.KeywordCompanyPostReq;
 import com.trendit.api.request.KeywordPostReq;
 import com.trendit.api.response.KeywordGetRes;
-import com.trendit.api.service.BoardService;
 import com.trendit.api.service.KeywordService;
 import com.trendit.api.service.WebClientService;
 import com.trendit.common.model.response.BaseRes;
 import com.trendit.api.response.KeywordListGetRes;
 import com.trendit.api.response.data.KeywordData;
-import com.trendit.api.service.KeywordService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -21,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.NoSuchElementException;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,10 +52,6 @@ public class KeywordController {
     })
     public ResponseEntity addKeyword(@Validated @RequestBody KeywordPostReq keywordPostReq,
                                      BindingResult bindingResult) throws Exception {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "요청 값이 잘못되었습니다."));
-        }
-
         keywordService.addKeyword(keywordPostReq);
         webClientService.addUserDictionary(keywordPostReq.getKeyword());
 
@@ -80,10 +69,6 @@ public class KeywordController {
     })
     public ResponseEntity addKeywordCompany(@Validated @RequestBody KeywordCompanyPostReq keywordCompanyPostReq,
                                             BindingResult bindingResult) throws Exception {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(400).body(BaseRes.of(400, "요청 값이 잘못되었습니다."));
-        }
-
         keywordService.addKeywordCompany(keywordCompanyPostReq);
         webClientService.addUserDictionary(keywordCompanyPostReq.getCompanyName());
 

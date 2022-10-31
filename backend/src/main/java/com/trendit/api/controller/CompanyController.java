@@ -3,7 +3,6 @@ package com.trendit.api.controller;
 import com.trendit.api.response.CompanyListGetRes;
 import com.trendit.api.response.SearchCompanyGetRes;
 import com.trendit.api.service.CompanyService;
-import com.trendit.common.model.response.BaseRes;
 import com.trendit.db.entity.Company;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

@@ -15,7 +15,6 @@ import com.trendit.api.service.NewsService;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/news")
